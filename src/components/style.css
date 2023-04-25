@@ -1,0 +1,90 @@
+.container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+  }
+  
+  /* Hide the browser's default checkbox */
+  .container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  /* Create a custom checkbox */
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 22px;
+    width: 22px;
+    background-color: #eee;
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .container:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+  
+  /* When the checkbox is checked, add a blue background */
+  .container input:checked ~ .checkmark {
+    background-color: #445cb6;
+  }
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the checkmark when checked */
+  .container input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  /* Style the checkmark/indicator */
+  .container .checkmark:after {
+    left: 7px;
+    top: 3px;
+    width: 9px;
+    height: 11px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+  }
+
+  .table-container {
+    max-width: 1000px;
+  }
+
+  .manager-tile {
+    box-shadow: 1px 0px 14px #ccc;
+    border-radius: 5px;
+    padding: 45px;
+  }
+
+  .copyButton {
+    margin-top: -30px;
+    margin-right: -25px;
+  }
+
+  .tableElem {
+    background: #8fcfd9
+  }
+
+  
+  .dropDown {
+    z-index: 100;
+    box-shadow: 1px 0px 14px #ccc;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
