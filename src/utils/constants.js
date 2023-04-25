@@ -1,13 +1,13 @@
 export const clientsReportConfig = {
-  Report1: ["Worker", ["ST"]],
-  Report2: ["Employee", ["Time Submitted"]],
+  WS: ["Worker", ["ST"]],
+  THD: ["Employee", ["Time Submitted"]],
 };
 
 export const namesConfig = {
-  "Inga, Inga": {variations: ["Inga1, Inga1", "Inga2, Inga2"], reportName: [{name: "Report1"}]},
+  "Inga, Inga": {variations: ["Inga1, Inga1", "Inga2, Inga2"], reportName: [{name: "WS"}]},
 };
 
-export const optionsNames = [{ name: "Report1" }, { name: "Report2" }];
+export const optionsNames = [{ name: "WS" }, { name: "THD" }];
 
 export const monthNames = [
   "December",
