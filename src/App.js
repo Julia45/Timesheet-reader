@@ -197,13 +197,8 @@ function App() {
           workingRecord.hoursCalc = {
             ...workingRecord.hoursCalc,
           };
-       
 
-          if (Object.keys(workingRecord.hoursCalc).includes(keyForHour)) {
-            workingRecord.hoursCalc[keyForHour] = Number(el[day]) + (Number(workingRecord.hoursCalc[keyForHour] || 0));
-          } else {
-            workingRecord.hoursCalc[keyForHour] = Number(el[day])
-          }
+          workingRecord.hoursCalc[keyForHour] = Number(el[day]) + (Number(workingRecord.hoursCalc[keyForHour]) || 0);
         });
 
         thirdReportUser[el.Assignee] = workingRecord;
