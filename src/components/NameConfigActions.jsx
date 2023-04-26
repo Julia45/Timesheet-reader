@@ -57,7 +57,6 @@ export const NameConfigActions = ({
       configToAdd[config.Key] = {reportName: reports, variations: variations}
     })
 
-    console.log(configToAdd, "configToAdd")
     let previousConfig = {
       ...nameConfig,
       ...configToAdd
