@@ -190,18 +190,23 @@ function App() {
       let workingRecord = thirdReportUser[el.Assignee?.trim()];
 
       if (workingRecord) {
-        const additionalUser = createUserForProjections(el);
         Object.keys(el)
         .filter((num) => !isNaN(Number(num))) 
         .forEach((day) => {
           let keyForHour = [`${day}-${monthNames.indexOf(el.Month)}`];
-          additionalUser.hoursCalc = {
-            ...additionalUser.hoursCalc,
-            [keyForHour]: Number(el[day]) + Number(workingRecord.hoursCalc[keyForHour]), //5-03
+          workingRecord.hoursCalc = {
+            ...workingRecord.hoursCalc,
           };
+       
+
+          if (Object.keys(workingRecord.hoursCalc).includes(keyForHour)) {
+            workingRecord.hoursCalc[keyForHour] = Number(el[day]) + (Number(workingRecord.hoursCalc[keyForHour] || 0));
+          } else {
+            workingRecord.hoursCalc[keyForHour] = Number(el[day])
+          }
         });
 
-        thirdReportUser[el.Assignee] = additionalUser;
+        thirdReportUser[el.Assignee] = workingRecord;
 
       } else {
         workingRecord = createUserForProjections(el);
