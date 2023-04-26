@@ -13,7 +13,8 @@ import {
   hasError,
   downloadData,
   defineOptions,
-  calculateAllHours
+  calculateAllHours,
+  createUserForProjections
 } from "./utils/helpers";
 import {
   clientsReportConfig,
@@ -186,26 +187,35 @@ function App() {
     });
 
     thirdReport.forEach((el) => {
-      let workingRecord = thirdReportUser[el.Assignee];
-      if (!workingRecord) {
-        workingRecord = {
-          name: el.Assignee?.trim(),
-          hoursCalc: {},
-          "Booking Type": el["Booking Type"],
-          manager: el.Manager || "",
-          managerTag: el["Manager Slack"] || ""
-        };
-        thirdReportUser[el.Assignee] = workingRecord;
-      }
+      let workingRecord = thirdReportUser[el.Assignee?.trim()];
 
-      Object.keys(el)
+      if (workingRecord) {
+        const additionalUser = createUserForProjections(el);
+        Object.keys(el)
+        .filter((num) => !isNaN(Number(num))) 
+        .forEach((day) => {
+          let keyForHour = [`${day}-${monthNames.indexOf(el.Month)}`];
+          additionalUser.hoursCalc = {
+            ...additionalUser.hoursCalc,
+            [keyForHour]: Number(el[day]) + Number(workingRecord.hoursCalc[keyForHour]), //5-03
+          };
+        });
+
+        thirdReportUser[el.Assignee] = additionalUser;
+
+      } else {
+        workingRecord = createUserForProjections(el);
+        Object.keys(el)
         .filter((num) => !isNaN(Number(num))) //[1,3,4]
         .forEach((day) => {
           workingRecord.hoursCalc = {
             ...workingRecord.hoursCalc,
-            [`${day}-${monthNames.indexOf(el.Month)}`]: el[day], //5-03
+            [`${day}-${monthNames.indexOf(el.Month)}`]: Number(el[day]), 
           };
         });
+
+        thirdReportUser[el.Assignee] = workingRecord;
+      }
     });
 
     copyThirdReport.push(...Object.values(thirdReportUser));
@@ -250,21 +260,20 @@ function App() {
   }, [firstFileData, secondFileData, thirdFileData]);
 
   const getData = () => {
-    if (!fileListFirst || !fileListSecond || !fileListThird || !selected) {
+    if (!fileListFirst || !fileListThird) {
       setFirstInputError(generateFileInputError(fileListFirst));
-      setSecondInputError(generateFileInputError(fileListSecond));
       setThirdInputError(generateFileInputError(fileListThird));
-      setDropDownError(generateFileInputError(selected, "Please select the platform!"));
+      if (!selected && fileListSecond) {
+        setDropDownError(generateFileInputError(selected, "Please select the platform!"));
+      }
       return;
     }
 
-    convertData(Array.from(fileListFirst), setFirstFileData);
-    convertData(Array.from(fileListSecond), setSecondFileData);
-    convertData(Array.from(fileListThird), setThirdFileData);
 
-    // convertData([...fileListFirst], setFirstFileData);
-    // convertData([...fileListSecond], setSecondFileData);
-    // convertData([...fileListThird], setThirdFileData);
+
+    convertData(Array.from(fileListFirst), setFirstFileData);
+    convertData(Array.from(fileListSecond || []), setSecondFileData);
+    convertData(Array.from(fileListThird), setThirdFileData);
   };
 
   const saveReportChnages = () => {
@@ -338,9 +347,8 @@ function App() {
             text="Upload Client Report"
             onChangeHandler={(event) => {
               setFileListSecond(event.target.files);
-              setSecondInputError(generateFileInputError(event.target.files));
             }}
-          ></Input>
+          />
 
           <DropDown
             options={options}

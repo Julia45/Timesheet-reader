@@ -31,7 +31,7 @@ export const modifyNamesConfig = (config) => {
   });
 };
 
-export const convertData = (array, dataSetter) => {
+export const convertData = (array = [], dataSetter) => {
   const result = [];
   array.forEach((file) => {
     Papa.parse(file, {
@@ -200,5 +200,14 @@ export const calculateTotalRepotHours = (data, field) => {
     (accumulator, currentValue) => accumulator + (currentValue.hours[field] || 0),
     0
   );
+}
 
+export const createUserForProjections = (el) => {
+  return {
+    name: el.Assignee?.trim(),
+    hoursCalc: {},
+    "Booking Type": el["Booking Type"],
+    manager: el.Manager || "",
+    managerTag: el["Manager Slack"] || ""
+  };
 }

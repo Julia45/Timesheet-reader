@@ -3,8 +3,8 @@ import { showChosenFiles } from "../utils/helpers"
 export const Input = ({ onChangeHandler, fileList, text, error }) => {
   return (
     <>
-      <div className="input-group mr-5 mt-2 mb-3">
-        <div className="w-50 d-flex mb-1">
+      <div className="input-group mr-2">
+        <div className="d-flex mb-2">
           <div className="input-group-prepend">
             <span className="input-group-text">{text}</span>
           </div>

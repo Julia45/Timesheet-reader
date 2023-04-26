@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ModalPopup } from "../components/Modal";
 import { DropDown } from "../components/DropDown";
+import { Input } from "../components/Input";
 
 export const AddBlock = ({
   children,
@@ -9,7 +10,10 @@ export const AddBlock = ({
   isFilter,
   options,
   setFilters,
-  filters
+  filters = [],
+  configFile,
+  setConfigFile,
+  addImportedConfig
 }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -31,31 +35,55 @@ export const AddBlock = ({
           {children}
         </ModalPopup>
       ) : null}
+      {
+        isFilter ? (
+          <div className="d-flex mx-2 mb-3">
+          <Input
+                  fileList={configFile}
+                  text="Upload Client Report"
+                  onChangeHandler={(event) => {
+                    setConfigFile(event.target.files);
+                  }}
+                />
+                <button
+                  onClick={() => addImportedConfig()}
+                  type="button"
+                  className="btn btn-secondary ml-2"
+                >
+                 Read and add config
+                </button>
+          </div>
+        ) : null
+      }
+
       <div className="mx-2 mb-3 d-flex align-items-center">
         <button
           onClick={() => setShowModal(true)}
           type="button"
-          className="btn btn-secondary"
+          className="btn btn-secondary mr-2"
         >
           Add configuration
         </button>
-        {isFilter ? (
-          <div className="d-flex w-100 justify-content-end">
+
+        {
+          isFilter ? (
+            <>
             <DropDown
             options={options}
             selected={filters[0]}
             setSelected={(option) => setFilters([option])}
             text="Filter users"
           ></DropDown>
-            <button
-              onClick={() => setFilters([])}
-              type="button"
-              className="btn btn-secondary ml-2"
-            >
-              Reset Filters
-            </button>
-          </div>
-        ) : null}
+          <button
+            onClick={() => setFilters([])}
+            type="button"
+            className="btn btn-secondary ml-2"
+          >
+            Reset Filters
+          </button>
+          </>
+          ) : null
+        }
       </div>
     </>
   );

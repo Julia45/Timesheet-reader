@@ -2,10 +2,9 @@ import { AddBlock } from "./AddConfig";
 import { ReportItemAction } from "./ReportItemAction";
 import { ConfigUserTable } from "./ConfigUserTable";
 import { useEffect, useState } from "react";
-import { validateUser } from "../utils/helpers";
+import { validateUser, convertData } from "../utils/helpers";
 import Multiselect from 'multiselect-react-dropdown';
 import { namesConfig } from "../utils/constants"
-
 
 export const NameConfigActions = ({
   saveUserNameChnages,
@@ -22,6 +21,8 @@ export const NameConfigActions = ({
   const [showConent, setShowContent] = useState(false);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState([]);
+  const [configFile, setConfigFile] = useState(null);
+  const [configData, setConfigData] = useState(null);
 
   useEffect(() => {
     let nameConfigSaved = JSON.parse(localStorage.getItem("nameConfig")) || namesConfig;
@@ -35,6 +36,38 @@ export const NameConfigActions = ({
     setUserReport([])
     setFilters([])
   };
+
+  const addImportedConfig = async () => {
+    if (!configFile || !configFile.length) {
+      return;
+    }
+    convertData(Array.from(configFile), setConfigData);
+  }
+
+  useEffect(() => {
+    const configToAdd = {};
+    if (!configData || !configData.length) {
+      return;
+    }
+    configData.forEach((config) => {
+      let reports = config.Report.split(";").filter(el => el.trim()).map((el) => {
+        return { name: el.trim() }
+      });
+      let variations = config.Variations.split(";").map(el => el.trim());
+      configToAdd[config.Key] = {reportName: reports, variations: variations}
+    })
+
+    console.log(configToAdd, "configToAdd")
+    let previousConfig = {
+      ...nameConfig,
+      ...configToAdd
+    };
+
+    setNameConfig(previousConfig);
+    localStorage.setItem("nameConfig", JSON.stringify(previousConfig));
+    setConfigFile(null)
+
+  }, [configData])
 
   const onSelect = (selectedList) => {
     setUserReport(selectedList)
@@ -59,6 +92,9 @@ export const NameConfigActions = ({
             options={options}
             setFilters={setFilters}
             filters={filters}
+            configFile={configFile}
+            setConfigFile={setConfigFile}
+            addImportedConfig={addImportedConfig}
           >
             <div>
               <ReportItemAction
