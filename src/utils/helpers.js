@@ -93,7 +93,7 @@ export const hasError = (row) => {
   let internalReport = row.hours.openAir;
   let clientReport = row.hours.client;
   let revReport = row.hours.third;
-  let isPTO = row.isPTO.includes("PTO");
+  let isPTO = row.isPTO.length === 1 && row.isPTO.includes("PTO");
 
   const allDifferentValues =
     revReport !== clientReport ||
@@ -206,7 +206,7 @@ export const createUserForProjections = (el) => {
   return {
     name: el.Assignee?.trim(),
     hoursCalc: {},
-    "Booking Type": [el["Booking Type"]],
+    "Booking Type": [el["Booking Type"]?.trim()],
     manager: el.Manager || "",
     managerTag: el["Manager Slack"] || ""
   };
