@@ -59,7 +59,7 @@ export const generateUser = (record) => {
     manager: "",
     managerTag: "",
     hasError: false,
-    isPTO: "",
+    isPTO: [],
     hours: {
       openAir: Number(record.openAirHours) || 0,
       client: null,
@@ -76,7 +76,7 @@ export const addOutSideUsers = (reportToSearch, naming, prepareUser, reportToAdd
       hasError: false,
       manager: "",
       managerTag: "",
-      isPTO: "",
+      isPTO: [],
       hours: {
         openAir: null,
         client: null,
@@ -206,7 +206,7 @@ export const createUserForProjections = (el) => {
   return {
     name: el.Assignee?.trim(),
     hoursCalc: {},
-    "Booking Type": el["Booking Type"],
+    "Booking Type": [el["Booking Type"]],
     manager: el.Manager || "",
     managerTag: el["Manager Slack"] || ""
   };

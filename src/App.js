@@ -80,7 +80,7 @@ function App() {
       return;
     }
 
-    user.hasError = isChecked;
+    user.hasError = !isChecked;
     setOverlaData(dataCopy);
   };
 
@@ -157,7 +157,7 @@ function App() {
     let thirdReportUser = {};
 
     openAirReport.forEach((el) => {
-      const user = copyOpenAirReport.find((user) => user.User.trim() === el.User.trim());
+      const user = copyOpenAirReport.find((user) => user.User?.trim() === el.User?.trim());
       let elementHours = Number(el["Submitted hours"]) + Number(el["Approved hours"]);
       if (user) {
         user.openAirHours += elementHours
@@ -188,8 +188,11 @@ function App() {
 
     thirdReport.forEach((el) => {
       let workingRecord = thirdReportUser[el.Assignee?.trim()];
-
       if (workingRecord) {
+        if (!workingRecord["Booking Type"].includes(el["Booking Type"])) {
+          workingRecord["Booking Type"] = [...workingRecord["Booking Type"], el["Booking Type"]]
+        }
+        
         Object.keys(el)
         .filter((num) => !isNaN(Number(num))) 
         .forEach((day) => {
@@ -197,7 +200,6 @@ function App() {
           workingRecord.hoursCalc = {
             ...workingRecord.hoursCalc,
           };
-
           workingRecord.hoursCalc[keyForHour] = Number(el[day]) + (Number(workingRecord.hoursCalc[keyForHour]) || 0);
         });
 

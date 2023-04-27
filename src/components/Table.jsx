@@ -33,17 +33,13 @@ export const Table = ({ data, handleChange }) => {
               <td>{row.hours.openAir === null ? "-" : row.hours.openAir}</td>
               <td>{row.hours.client === null ? "-" : row.hours.client }</td>
               <td>{row.hours.third === null ? "-" : row.hours.third}</td>
-              <td>{row.isPTO || "Failed to figure out"}</td>
+              <td>{row.isPTO.join(", ") || "Failed to figure out"}</td>
               <td>{row.manager || "Failed to figure out"}</td>
               <td>
-                {row.hasError ? (
                   <CheckBox
                     onChangeHandler={(isChecked) => handleChange(isChecked, row)}
                     checkedValue={row.hasError}
                   />
-                ) : (
-                  <div>Approved</div>
-                )}
               </td>
             </tr>
           );
