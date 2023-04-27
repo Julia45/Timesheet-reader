@@ -67,7 +67,6 @@ function App() {
   const [thirdFileData, setThirdFileData] = useState([]);
 
   const [firstInputError, setFirstInputError] = useState(null);
-  const [secondInputError, setSecondInputError] = useState(null);
   const [thirdInputError, setThirdInputError] = useState(null);
 
   const [dropDownError, setDropDownError] = useState(null);
@@ -262,20 +261,22 @@ function App() {
   }, [firstFileData, secondFileData, thirdFileData]);
 
   const getData = () => {
-    if (!fileListFirst || !fileListThird) {
+    if (!fileListFirst || !fileListFirst?.length || !fileListThird || !fileListThird?.length ) {
       setFirstInputError(generateFileInputError(fileListFirst));
       setThirdInputError(generateFileInputError(fileListThird));
-      if (!selected && fileListSecond) {
-        setDropDownError(generateFileInputError(selected, "Please select the platform!"));
-      }
+      setOverlaData([]);
+      return;
+    } 
+
+    if ((fileListSecond || fileListSecond?.length) && !selected) {
+      setDropDownError(generateFileInputError(selected, "Please select the platform!"));
+      setOverlaData([]);
       return;
     }
 
-
-
-    convertData(Array.from(fileListFirst), setFirstFileData);
+    convertData(Array.from(fileListFirst || []), setFirstFileData);
     convertData(Array.from(fileListSecond || []), setSecondFileData);
-    convertData(Array.from(fileListThird), setThirdFileData);
+    convertData(Array.from(fileListThird || []), setThirdFileData);
   };
 
   const saveReportChnages = () => {
@@ -345,7 +346,7 @@ function App() {
           <h5>Client Report</h5>
           <Input
             fileList={fileListSecond}
-            error={secondInputError}
+            error={null}
             text="Upload Client Report"
             onChangeHandler={(event) => {
               setFileListSecond(event.target.files);

@@ -188,7 +188,7 @@ export const showChosenFiles = (files) => {
   let message = "";
   if (allFilesNames.length === 1) {
     message = "is chosen";
-  } else  {
+  } else if (allFilesNames.length > 1)  {
     message = "are chosen"
   }
 
