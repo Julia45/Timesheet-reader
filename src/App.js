@@ -188,8 +188,8 @@ function App() {
     thirdReport.forEach((el) => {
       let workingRecord = thirdReportUser[el.Assignee?.trim()];
       if (workingRecord) {
-        if (!workingRecord["Booking Type"].includes(el["Booking Type"])) {
-          workingRecord["Booking Type"] = [...workingRecord["Booking Type"], el["Booking Type"]]
+        if (!workingRecord["Booking Type"].includes(el["Booking Type"]?.trim())) {
+          workingRecord["Booking Type"] = [...workingRecord["Booking Type"], el["Booking Type"]?.trim()]
         }
         
         Object.keys(el)
