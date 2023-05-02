@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./style.css"
 
 export const CheckBox = ({ checkedValue, onChangeHandler }) => {
-  const [checked, setChecked] = useState(!checkedValue);
+  const [checked, setChecked] = useState(checkedValue);
 
   const handleChange = () => {
     setChecked(!checked);

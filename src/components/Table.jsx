@@ -38,7 +38,7 @@ export const Table = ({ data, handleChange }) => {
               <td>
                   <CheckBox
                     onChangeHandler={(isChecked) => handleChange(isChecked, row)}
-                    checkedValue={row.hasError}
+                    checkedValue={!row.hasError}
                   />
               </td>
             </tr>

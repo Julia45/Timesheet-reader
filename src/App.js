@@ -67,7 +67,6 @@ function App() {
   const [thirdFileData, setThirdFileData] = useState([]);
 
   const [firstInputError, setFirstInputError] = useState(null);
-  const [thirdInputError, setThirdInputError] = useState(null);
 
   const [dropDownError, setDropDownError] = useState(null);
   const [overalData, setOverlaData] = useState([]);
@@ -261,9 +260,8 @@ function App() {
   }, [firstFileData, secondFileData, thirdFileData]);
 
   const getData = () => {
-    if (!fileListFirst || !fileListFirst?.length || !fileListThird || !fileListThird?.length ) {
+    if (!fileListFirst || !fileListFirst?.length) {
       setFirstInputError(generateFileInputError(fileListFirst));
-      setThirdInputError(generateFileInputError(fileListThird));
       setOverlaData([]);
       return;
     } 
@@ -366,11 +364,10 @@ function App() {
           <h5>Projections Report</h5>
           <Input
             fileList={fileListThird}
-            error={thirdInputError}
+            error={null}
             text="Upload Rav Report"
             onChangeHandler={(event) => {
               setFileListThird(event.target.files);
-              setThirdInputError(generateFileInputError(event.target.files));
             }}
           ></Input>
           <div className="d-flex">
