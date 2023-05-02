@@ -40,7 +40,7 @@ export const AddBlock = ({
           <div className="d-flex mx-2 mb-3">
           <Input
                   fileList={configFile}
-                  text="Upload Client Report"
+                  text="Upload Name Config"
                   onChangeHandler={(event) => {
                     setConfigFile(event.target.files);
                   }}
