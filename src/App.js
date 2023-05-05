@@ -73,7 +73,7 @@ function App() {
 
   const handleChecked = (isChecked, row) => {
     const dataCopy = [...overalData];
-    const user = dataCopy.find((el) => el.name === row.name);
+    const user = dataCopy.find((el) => el.id === row.id);
     if (!user) {
       return;
     }
@@ -138,6 +138,7 @@ function App() {
         const dayHours = Number(thirdUser.hoursCalc[day]) || 0
         hours += dayHours;
       });
+
       user.hours.third = hours;
       user.isPTO = thirdUser["Booking Type"];
       user.manager = thirdUser["manager"] || "";
@@ -157,7 +158,7 @@ function App() {
     openAirReport.forEach((el) => {
       const user = copyOpenAirReport.find((user) => user.User?.trim() === el.User?.trim());
       let elementHours = Number(el["Submitted hours"]) + Number(el["Approved hours"]);
-      if (user) {
+      if (user && user["Project"] === el["Project"] ) {
         user.openAirHours += elementHours
       } else {
         let element = {
@@ -185,12 +186,9 @@ function App() {
     });
 
     thirdReport.forEach((el) => {
-      let workingRecord = thirdReportUser[el.Assignee?.trim()];
-      if (workingRecord) {
-        if (!workingRecord["Booking Type"].includes(el["Booking Type"]?.trim())) {
-          workingRecord["Booking Type"] = [...workingRecord["Booking Type"], el["Booking Type"]?.trim()]
-        }
-        
+      let id = `${el.Assignee?.trim()}${el["Project"]?.trim()}`
+      let workingRecord = thirdReportUser[id];
+      if (workingRecord) {        
         Object.keys(el)
         .filter((num) => !isNaN(Number(num))) 
         .forEach((day) => {
@@ -201,7 +199,7 @@ function App() {
           workingRecord.hoursCalc[keyForHour] = Number(el[day]) + (Number(workingRecord.hoursCalc[keyForHour]) || 0);
         });
 
-        thirdReportUser[el.Assignee] = workingRecord;
+        thirdReportUser[id] = workingRecord;
 
       } else {
         workingRecord = createUserForProjections(el);
@@ -214,7 +212,7 @@ function App() {
           };
         });
 
-        thirdReportUser[el.Assignee] = workingRecord;
+        thirdReportUser[id] = workingRecord;
       }
     });
 
@@ -402,7 +400,7 @@ function App() {
                   downloadData(overalData);
                 }}
               >
-                Download Data
+                Download CSV Data
               </button>
               <button
                 className="btn btn-secondary"

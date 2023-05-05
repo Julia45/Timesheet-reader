@@ -57,7 +57,9 @@ export const generateUser = (record) => {
   return {
     name: record.User?.trim() || "Failed to read",
     manager: "",
+    id: `${record.User?.trim()}${record.Project?.trim()}`,
     managerTag: "",
+    project: record["Project"]?.trim() || "Failed to read",
     hasError: false,
     isPTO: [],
     hours: {
@@ -73,9 +75,11 @@ export const addOutSideUsers = (reportToSearch, naming, prepareUser, reportToAdd
   reportToSearch.forEach((userEl) => {
     let user = {
       name: userEl[naming] || "Failed to read name",
+      id: userEl.id || "",
       hasError: false,
       manager: "",
       managerTag: "",
+      project: userEl.project || "Failed to identify",
       isPTO: [],
       hours: {
         openAir: null,
@@ -113,23 +117,23 @@ export const hasError = (row) => {
 
 export const downloadData = (overalData) => {
   const popleWithProblem = overalData
-    .filter((el) => el.hasError === true)
+    .filter((el) => el.hasError === false)
     .map(
       (
         el
       ) => 
-      `${el.name} has problems with submitted hours: OpenAir - ${el.hours.openAir}, ClientReport: ${el.hours.client}, Projections report: ${el.hours.third}`
+      `${el.name.replace(/,/g, "")}, ${el.project}, ${el.hours.openAir || 0}, ${el.hours.client || 0}, ${el.hours.third || 0}`
     );
+
+    popleWithProblem.unshift("Assignee, Project, OpenAir, Client report, Projections");
     var lineConcat = popleWithProblem.join("\r\n");
-
-
     const a = document.createElement("a");
     a.href = URL.createObjectURL(
       new Blob([lineConcat], {
-        type: "application/txt"
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;"
       })
     );
-    a.setAttribute("download", "data.txt");
+    a.setAttribute("download", "data.xlsx");
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -205,9 +209,11 @@ export const calculateTotalRepotHours = (data, field) => {
 export const createUserForProjections = (el) => {
   return {
     name: el.Assignee?.trim(),
+    id: `${el.Assignee?.trim()}${el["Project"]?.trim()}`,
     hoursCalc: {},
     "Booking Type": [el["Booking Type"]?.trim()],
-    manager: el.Manager || "",
-    managerTag: el["Manager Slack"] || ""
+    manager: el.Manager?.trim() || "",
+    managerTag: el["Manager Slack"]?.trim() || "",
+    project: el["Project"]?.trim() || ""
   };
 }
