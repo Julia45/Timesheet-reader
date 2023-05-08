@@ -91,7 +91,7 @@ export const addOutSideUsers = (reportToSearch, naming, prepareUser, reportToAdd
         thirdSeparated: {}
       },
     };
-    const possibleNames = nameConfig[user.name] || [];
+    const possibleNames = nameConfig[user.name]?.variations || [];
     prepareUser(reportToSearchCopy, user, possibleNames);
     let existingUser = reportToAdd.find((el) => el.name === user.name || possibleNames.includes(el.name));
     if (existingUser) {
