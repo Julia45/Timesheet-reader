@@ -39,30 +39,8 @@ export const RedUsersData = ({ data, startDate, endDate }) => {
     return `${day} ${monthNames[month]} ${year}`;
   };
 
-  //   const copyText = async () => {
-  //     let text = document.getElementById('myText').innerHTML;
-  //     const titleSpan = document.createElement("span");
-  //     titleSpan.innerHTML = text;
-  //     const copiedText =  titleSpan.innerText;
-
-  //     try {
-  //         await navigator.clipboard.writeText(copiedText);
-  //         console.log('Content copied to clipboard');
-  //       } catch (err) {
-  //         console.error('Failed to copy: ', err);
-  //       }
-  //   }
-
   return (
     <div className="mb-5 manager-tile">
-      {/* <button
-        className="btn btn-secondary float-right ml-3 copyButton"
-        onClick={() => {
-          copyText();
-        }}
-      >
-        Copy message
-      </button> */}
       <div id="myText">
         <p>
           {!filteredData.length && !redPeople.length ? (
@@ -81,9 +59,9 @@ export const RedUsersData = ({ data, startDate, endDate }) => {
               return (
                 <li>
                   <span className="font-weight-bold">{info.name}:</span>{" "}
-                  {info.hours.openAir || 0} hours in OpenAir,{" "}
-                  {info.hours.client || 0} hours in Client report,
-                  but in projections it should be {info.hours.third || 0} hours
+                  {info.hours.openAir || 0} hour(s) in OpenAir,{" "}
+                  {info.hours.client || 0} hour(s) in Client report,
+                  but in projections it should be {info.hours.third || 0} hour(s)
                 </li>
               );
             })}
@@ -105,9 +83,9 @@ export const RedUsersData = ({ data, startDate, endDate }) => {
                           <span className="font-weight-bold">
                             {subordinate.name}:
                           </span>{" "}
-                          {subordinate.hours.openAir || 0} hours in OpenAir,{" "}
-                          {subordinate.hours.client || 0} hours in Client report,
-                          but in projections it should be {subordinate.hours.third || 0} hours
+                          {subordinate.hours.openAir || 0} hour(s) in OpenAir,{" "}
+                          {subordinate.hours.client || 0} hour(s) in Client report,
+                          but in projections it should be {subordinate.hours.third || 0} hour(s)
                         </li>
                       );
                     })}

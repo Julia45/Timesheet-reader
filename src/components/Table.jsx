@@ -29,12 +29,12 @@ export const Table = ({ data, handleChange }) => {
       <tbody>
         {data.map((row) => {
           return (
-            <tr key={row.id} className={`${row.hasError ? "bg-danger text-white" : "bg-secondary text-white"}`}>
+            <tr key={`${row.id}${row.isPTO}`} className={`${row.hasError ? "bg-danger text-white" : "bg-secondary text-white"}`}>
               <td>{row.name}</td>
               <td>{row.hours.openAir === null ? "-" : row.hours.openAir}</td>
               <td>{row.hours.client === null ? "-" : row.hours.client }</td>
               <td>{row.hours.third === null ? "-" : row.hours.third}</td>
-              <td>{row.isPTO.join(", ") || "Failed to figure out"}</td>
+              <td>{row.isPTO || "Failed to figure out"}</td>
               <td>{row.manager || "Failed to figure out"}</td>
               <td>{row.project || "Failed to figure out"}</td>
               <td>

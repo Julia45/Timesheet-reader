@@ -102,6 +102,7 @@ function App() {
   }, [selected]);
 
   const reworkClientReport = (copyClientReport, user, possibleNames) => {
+    
     const index = copyClientReport.findIndex((clientReportRecord) => {
       return (
         clientReportRecord[clientConfigKey.personName]?.trim() === user.name ||
@@ -109,6 +110,7 @@ function App() {
       );
     });
 
+    
     if (index >= 0) {
       user.hours.client = Number(
         copyClientReport[index].reportCalcHours
@@ -127,8 +129,7 @@ function App() {
 
     const thirdUserIndex = copyThirdReport.findIndex((thirdReportRecord) => {
       return (
-        thirdReportRecord.name === user.name ||
-        possibleNames.includes(thirdReportRecord.name)
+        (thirdReportRecord.name === user.name || possibleNames.includes(thirdReportRecord.name)) && user.project === thirdReportRecord.project
       );
     });
 
@@ -139,13 +140,13 @@ function App() {
         hours += dayHours;
       });
 
+      user.hours.thirdSeparated = thirdUser.hoursCalc
       user.hours.third = hours;
       user.isPTO = thirdUser["Booking Type"];
       user.manager = thirdUser["manager"] || "";
       user.managerTag = thirdUser["managerTag"] || "";
       copyThirdReport.splice(thirdUserIndex, 1);
     }
-
   };
 
   function toSimpleReport(openAirReport, clientReport, thirdReport) {
@@ -186,7 +187,7 @@ function App() {
     });
 
     thirdReport.forEach((el) => {
-      let id = `${el.Assignee?.trim()}${el["Project"]?.trim()}`
+      let id = `${el.Assignee?.trim()}${el["Project"]?.trim()}${el["Booking Type"]?.trim()}`
       let workingRecord = thirdReportUser[id];
       if (workingRecord) {        
         Object.keys(el)

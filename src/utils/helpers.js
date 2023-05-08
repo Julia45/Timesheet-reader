@@ -1,4 +1,6 @@
 import Papa from "papaparse";
+import { monthNames } from "./constants"
+import { range } from "lodash"
 
 export const formatDate = (date) => {
   let month = date.getUTCMonth() + 1; 
@@ -61,11 +63,12 @@ export const generateUser = (record) => {
     managerTag: "",
     project: record["Project"]?.trim() || "Failed to read",
     hasError: false,
-    isPTO: [],
+    isPTO: "",
     hours: {
       openAir: Number(record.openAirHours) || 0,
       client: null,
       third: null,
+      thirdSeparated: {}
     },
   };
 };
@@ -80,15 +83,21 @@ export const addOutSideUsers = (reportToSearch, naming, prepareUser, reportToAdd
       manager: "",
       managerTag: "",
       project: userEl.project || "Failed to identify",
-      isPTO: [],
+      isPTO: "",
       hours: {
         openAir: null,
         client: null,
         third: null,
+        thirdSeparated: {}
       },
     };
     const possibleNames = nameConfig[user.name] || [];
     prepareUser(reportToSearchCopy, user, possibleNames);
+    let existingUser = reportToAdd.find((el) => el.name === user.name || possibleNames.includes(el.name));
+    if (existingUser) {
+      user.hours.openAir = existingUser.hours.openAir;
+      user.hours.client = existingUser.hours.client;
+    }
     reportToAdd.push(user);
   });
 };
@@ -97,7 +106,7 @@ export const hasError = (row) => {
   let internalReport = row.hours.openAir;
   let clientReport = row.hours.client;
   let revReport = row.hours.third;
-  let isPTO = row.isPTO.length === 1 && row.isPTO.includes("PTO");
+  let isPTO = row.isPTO.includes("PTO");
 
   const allDifferentValues =
     revReport !== clientReport ||
@@ -116,17 +125,29 @@ export const hasError = (row) => {
 };
 
 export const downloadData = (overalData) => {
-  const popleWithProblem = overalData
-    .filter((el) => el.hasError === false)
-    .map(
-      (
-        el
-      ) => 
-      `${el.name.replace(/,/g, "")}, ${el.project}, ${el.hours.openAir || 0}, ${el.hours.client || 0}, ${el.hours.third || 0}`
-    );
+  const userWithHours = overalData.find(el => Object.keys(el.hours.thirdSeparated).length);
+  const monthNumbers = Object.keys(userWithHours.hours.thirdSeparated).map(data => data.split("-")[1]);
+  let uniqMonth = [...new Set(monthNumbers)];
 
-    popleWithProblem.unshift("Assignee, Project, OpenAir, Client report, Projections");
-    var lineConcat = popleWithProblem.join("\r\n");
+
+  const popleWithProblem = overalData
+    .filter((el) => el.hasError === false);
+
+  const finalData = [];
+  uniqMonth.forEach((month) => {
+    popleWithProblem.forEach((person) => {
+      const daysHours = range(1, 32).map((day) => {
+        return person.hours.thirdSeparated[`${day}-${month}`] || 0
+      })
+      const stringWithHours = daysHours.join(", ")
+      finalData.push(
+        `${monthNames[Number(month)]}, ${person.name.replace(/,/g, "")}, ${person.managerTag}, ${person.manager}, ${person.isPTO}, ${person.hours.third} , ${stringWithHours}`
+        )
+    })
+  })
+
+  finalData.unshift(`Month, Assignee, Manager Slack, Manager, Booking Type, Total billable hour(s), ${range(1, 32).join(", ")}`);
+  let lineConcat = finalData.join("\r\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(
       new Blob([lineConcat], {
@@ -209,9 +230,9 @@ export const calculateTotalRepotHours = (data, field) => {
 export const createUserForProjections = (el) => {
   return {
     name: el.Assignee?.trim(),
-    id: `${el.Assignee?.trim()}${el["Project"]?.trim()}`,
+    id: `${el.Assignee?.trim()}${el["Project"]?.trim()}${el["Booking Type"]?.trim()}`,
     hoursCalc: {},
-    "Booking Type": [el["Booking Type"]?.trim()],
+    "Booking Type": el["Booking Type"]?.trim() || "",
     manager: el.Manager?.trim() || "",
     managerTag: el["Manager Slack"]?.trim() || "",
     project: el["Project"]?.trim() || ""
