@@ -93,11 +93,22 @@ export const addOutSideUsers = (reportToSearch, naming, prepareUser, reportToAdd
     };
     const possibleNames = nameConfig[user.name]?.variations || [];
     prepareUser(reportToSearchCopy, user, possibleNames);
-    let existingUser = reportToAdd.find((el) => el.name === user.name || possibleNames.includes(el.name));
-    if (existingUser) {
-      user.hours.openAir = existingUser.hours.openAir;
-      user.hours.client = existingUser.hours.client;
-    }
+    let variation = Object.entries(nameConfig).map(([key, val]) => {
+      if (val.variations.includes(user.name)) {
+        return key
+      };
+      return null
+    })
+
+    let existingUserIndex = reportToAdd.findIndex((el) => el.name === user.name || possibleNames.includes(el.name) || variation.includes(el.name))
+    if (existingUserIndex >= 0) {
+      let workingUser = reportToAdd[existingUserIndex];
+      user.hours.client = workingUser.hours.client;
+      if (workingUser.project === user.project && workingUser.isPTO === user.isPTO) {
+        user.hours.openAir = workingUser.hours.openAir;
+        reportToAdd.splice(existingUserIndex, 1);
+      }
+    } 
     reportToAdd.push(user);
   });
 };

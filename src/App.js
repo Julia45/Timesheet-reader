@@ -124,12 +124,17 @@ function App() {
     const endDate1 = new Date(endDate);
     endDate1.setDate(endDate1.getDate() + 1);
     let hours = 0;
-
+    let variation = Object.entries(nameConfig).map(([key, val]) => {
+      if (val.variations.includes(user.name)) {
+        return key
+      };
+      return null
+    })
     const intervals = Interval.fromDateTimes(startDate, endDate1).splitBy({ day: 1 }).map((d) => `${d.start.day}-${d.start.month}`);
-
     const thirdUserIndex = copyThirdReport.findIndex((thirdReportRecord) => {
       return (
-        (thirdReportRecord.name === user.name || possibleNames.includes(thirdReportRecord.name)) && user.project === thirdReportRecord.project
+        (thirdReportRecord.name === user.name || possibleNames.includes(thirdReportRecord.name) || variation.includes(thirdReportRecord.name)) 
+        && user.project === thirdReportRecord.project
       );
     });
 
