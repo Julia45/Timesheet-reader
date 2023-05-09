@@ -92,6 +92,7 @@ export const addOutSideUsers = (reportToSearch, naming, prepareUser, reportToAdd
       },
     };
     const possibleNames = nameConfig[user.name]?.variations || [];
+    
     prepareUser(reportToSearchCopy, user, possibleNames);
     let variation = Object.entries(nameConfig).map(([key, val]) => {
       if (val.variations.includes(user.name)) {
@@ -104,6 +105,9 @@ export const addOutSideUsers = (reportToSearch, naming, prepareUser, reportToAdd
     if (existingUserIndex >= 0) {
       let workingUser = reportToAdd[existingUserIndex];
       user.hours.client = workingUser.hours.client;
+      if (workingUser.id === "") {
+        reportToAdd.splice(existingUserIndex, 1);
+      }
       if (workingUser.project === user.project && workingUser.isPTO === user.isPTO) {
         user.hours.openAir = workingUser.hours.openAir;
         reportToAdd.splice(existingUserIndex, 1);
