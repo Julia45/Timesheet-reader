@@ -13,7 +13,6 @@ const headers = [
 ];
 
 export const Table = ({ data, handleChange }) => {
-  
   return (
     <table className="table w-100">
       <thead style={{whiteSpace: "nowrap"}}>
