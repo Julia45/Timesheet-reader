@@ -101,8 +101,7 @@ function App() {
     }
   }, [selected]);
 
-  const reworkClientReport = (copyClientReport, user, possibleNames) => {
-    
+  const reworkClientReport = (copyClientReport, user, possibleNames, reportToAdd = []) => {
     const index = copyClientReport.findIndex((clientReportRecord) => {
       return (
         clientReportRecord[clientConfigKey.personName]?.trim() === user.name ||
@@ -110,12 +109,22 @@ function App() {
       );
     });
 
+    let variation = Object.entries(nameConfig).map(([key, val]) => {
+      if (val.variations.includes(user.name)) {
+        return key
+      };
+      return null
+    })
+    let existingUserIndex = reportToAdd.findIndex((el) => el.name === user.name || possibleNames.includes(el.name) || variation.includes(el.name))
+
     
     if (index >= 0) {
       user.hours.client = Number(
         copyClientReport[index].reportCalcHours
       );
       copyClientReport.splice(index, 1);
+    } else if (existingUserIndex >= 0) {
+      user.hours.client = reportToAdd[existingUserIndex]?.hours.client
     };
   };
 
@@ -227,7 +236,7 @@ function App() {
     copyOpenAirReport.forEach((openAirRecord) => {
       const user = generateUser(openAirRecord);
       const possibleNames = nameConfig[user.name]?.variations || [];
-      reworkClientReport(copyClientReport, user, possibleNames);
+      reworkClientReport(copyClientReport, user, possibleNames, report);
       reworkRevenueReport(copyThirdReport, user, possibleNames);
       report.push(user);
     });
