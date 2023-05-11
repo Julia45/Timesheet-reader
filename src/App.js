@@ -154,7 +154,7 @@ function App() {
         hours += dayHours;
       });
 
-      user.hours.thirdSeparated = thirdUser.hoursCalc
+      user.hours.thirdSeparated = thirdUser.hoursCalc;
       user.hours.third = hours;
       user.isPTO = thirdUser["Booking Type"];
       user.manager = thirdUser["manager"] || "";

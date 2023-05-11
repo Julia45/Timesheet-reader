@@ -1,6 +1,6 @@
 import Papa from "papaparse";
 import { monthNames } from "./constants"
-import { range } from "lodash"
+import { range, sortBy } from "lodash"
 
 export const formatDate = (date) => {
   let month = date.getUTCMonth() + 1; 
@@ -92,7 +92,7 @@ export const addOutSideUsers = (reportToSearch, naming, prepareUser, reportToAdd
       },
     };
     const possibleNames = nameConfig[user.name]?.variations || [];
-    
+
     prepareUser(reportToSearchCopy, user, possibleNames);
     let variation = Object.entries(nameConfig).map(([key, val]) => {
       if (val.variations.includes(user.name)) {
@@ -143,25 +143,24 @@ export const downloadData = (overalData) => {
   const userWithHours = overalData.find(el => Object.keys(el.hours.thirdSeparated).length);
   const monthNumbers = Object.keys(userWithHours.hours.thirdSeparated).map(data => data.split("-")[1]);
   let uniqMonth = [...new Set(monthNumbers)];
-
-
   const popleWithProblem = overalData
     .filter((el) => el.hasError === false);
 
   const finalData = [];
+  let sortedPopleWithProblem = sortBy(popleWithProblem, [(o) => o.project]);
   uniqMonth.forEach((month) => {
-    popleWithProblem.forEach((person) => {
+    sortedPopleWithProblem.forEach((person) => {
       const daysHours = range(1, 32).map((day) => {
         return person.hours.thirdSeparated[`${day}-${month}`] || 0
       })
       const stringWithHours = daysHours.join(", ")
       finalData.push(
-        `${monthNames[Number(month)]}, ${person.name.replace(/,/g, "")}, ${person.managerTag}, ${person.manager}, ${person.isPTO}, ${person.hours.third} , ${stringWithHours}`
+        `${monthNames[Number(month)]}, ${person.name.replace(/,/g, "")}, ${person.project} , ${person.managerTag || "Not defined"}, ${person.manager || "Not defined"}, ${person.isPTO || "Not defined"}, ${person.hours.third || "Can not calculate"} , ${stringWithHours}`
         )
     })
   })
 
-  finalData.unshift(`Month, Assignee, Manager Slack, Manager, Booking Type, Total billable hour(s), ${range(1, 32).join(", ")}`);
+  finalData.unshift(`Month, Assignee, Project, Manager Slack, Manager, Booking Type, Total billable hour(s), ${range(1, 32).join(", ")}`);
   let lineConcat = finalData.join("\r\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(
