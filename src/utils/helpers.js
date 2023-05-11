@@ -57,11 +57,11 @@ export const generateFileInputError = (entity, message) => {
 
 export const generateUser = (record) => {
   return {
-    name: record.User?.trim() || "Failed to read",
+    name: record.User?.trim() || "",
     manager: "",
     id: `${record.User?.trim()}${record.Project?.trim()}`,
     managerTag: "",
-    project: record["Project"]?.trim() || "Failed to read",
+    project: record["Project"]?.trim() || "",
     hasError: false,
     isPTO: "",
     hours: {
@@ -77,13 +77,13 @@ export const addOutSideUsers = (reportToSearch, naming, prepareUser, reportToAdd
   const reportToSearchCopy = [...reportToSearch];
   reportToSearch.forEach((userEl) => {
     let user = {
-      name: userEl[naming] || "Failed to read name",
+      name: userEl[naming] || "",
       id: userEl.id || "",
       hasError: false,
-      manager: "",
-      managerTag: "",
-      project: userEl.project || "Failed to identify",
-      isPTO: "",
+      manager: userEl.manager || "",
+      managerTag: userEl.managerTag || "",
+      project: userEl.project || "",
+      isPTO: userEl["Booking Type"] || "",
       hours: {
         openAir: null,
         client: null,
@@ -92,7 +92,6 @@ export const addOutSideUsers = (reportToSearch, naming, prepareUser, reportToAdd
       },
     };
     const possibleNames = nameConfig[user.name]?.variations || [];
-
     prepareUser(reportToSearchCopy, user, possibleNames);
     let variation = Object.entries(nameConfig).map(([key, val]) => {
       if (val.variations.includes(user.name)) {
@@ -140,8 +139,9 @@ export const hasError = (row) => {
 };
 
 export const downloadData = (overalData) => {
-  const userWithHours = overalData.find(el => Object.keys(el.hours.thirdSeparated).length);
-  const monthNumbers = Object.keys(userWithHours.hours.thirdSeparated).map(data => data.split("-")[1]);
+  let sortedUsers = sortBy(overalData, [(o) => Object.keys(o.hours.thirdSeparated).length]);
+  const userWithMaxHours = sortedUsers[sortedUsers.length - 1];
+  const monthNumbers = Object.keys(userWithMaxHours.hours.thirdSeparated).map(data => data.split("-")[1]);
   let uniqMonth = [...new Set(monthNumbers)];
   const popleWithProblem = overalData
     .filter((el) => el.hasError === false);
