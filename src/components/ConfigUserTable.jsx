@@ -179,8 +179,8 @@ export const ConfigUserTable = ({ data, setNameConfig, options, filters, setFilt
                       ))}
                     </td>
                     <td className="align-middle">
-                      {row.reportName.map((el) => (
-                        <span className="mx-1 p-1 rounded tableElem">
+                      {row.reportName.map((el, index) => (
+                        <span key={`${index} ${el.name}`} className="mx-1 p-1 rounded tableElem">
                           {el.name}
                         </span>
                       ))}

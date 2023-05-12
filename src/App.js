@@ -185,12 +185,18 @@ function App() {
     });
 
     clientReport.forEach((el) => {
+      let variation = Object.entries(nameConfig).map(([key, val]) => {
+        if (val.variations.includes(el[clientConfigKey.personName]?.trim())) {
+          return [...val.variations, key]
+        };
+        return [null]
+      });
       const user = copyClientReport.find(
         (user) =>
-          user[clientConfigKey.personName]?.trim() === el[clientConfigKey.personName]?.trim()
+          user[clientConfigKey.personName]?.trim() === el[clientConfigKey.personName]?.trim() || variation[0].includes(user[clientConfigKey.personName]?.trim())
       );
       if (user) {
-        user.reportCalcHours = user.reportCalcHours +  calculateAllHours(el, clientConfigKey)
+        user.reportCalcHours = user.reportCalcHours + calculateAllHours(el, clientConfigKey)
       } else {
         let userWithCalcHours = {
           ...el,
