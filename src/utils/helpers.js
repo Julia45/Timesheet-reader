@@ -153,9 +153,11 @@ export const downloadData = (overalData) => {
       const daysHours = range(1, 32).map((day) => {
         return person.hours.thirdSeparated[`${day}-${month}`] || 0
       })
-      const stringWithHours = daysHours.join(", ")
+      const stringWithHours = daysHours.join(", ");
+      const calculatingHoursforMonth = daysHours.reduce(
+        (accumulator, currentValue) => accumulator + currentValue,0);
       finalData.push(
-        `${monthNames[Number(month)]}, ${person.name.replace(/,/g, "")}, ${person.project} , ${person.managerTag || "Not defined"}, ${person.manager || "Not defined"}, ${person.isPTO || "Not defined"}, ${person.hours.third || "Can not calculate"} , ${stringWithHours}`
+        `${monthNames[Number(month)]}, ${person.name.replace(/,/g, "") || "-"}, ${person.project || "Missing"} , ${person.managerTag || "Missing"}, ${person.manager || "Missing"}, ${person.isPTO || "Missing"}, ${calculatingHoursforMonth || 0} , ${stringWithHours}`
         )
     })
   })
