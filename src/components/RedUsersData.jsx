@@ -47,8 +47,8 @@ export const RedUsersData = ({ data, startDate, endDate }) => {
             <>There are no people with incorrect reports.</>
           ) : (
             <>
-              Dear Managers, the following people have submitted incorrect timesheet reports or have missed ones for the following period of time:{" "}
-              <span className="font-weight-bold">{formateDate(startDate)} - {formateDate(endDate)}</span>, please help to fix this.
+              Dear Managers, <br></br> the following people have submitted incorrect timesheet reports or have missed ones for the following period of time:{" "}
+              <span className="font-weight-bold">{formateDate(startDate)} - {formateDate(endDate)}</span>, please help to fix this:
             </>
           )}
         </p>
@@ -59,7 +59,7 @@ export const RedUsersData = ({ data, startDate, endDate }) => {
                 <li>
                   <span className="font-weight-bold">{info.name}:</span>{" "}
                   {info.hours.openAir || 0} hour(s) in OpenAir,{" "}
-                  {info.hours.client || 0} hour(s) in Client report,
+                  {info.hours.client || 0} hour(s) in Client report,{" "}
                   {info.hours.third || 0} hour(s) in projections
                 </li>
               );
@@ -73,7 +73,7 @@ export const RedUsersData = ({ data, startDate, endDate }) => {
                   <div className="">
                     {!info.manager
                       ? "No manager specified:"
-                      : `${info.managerTag}:`}
+                      : `${info.manager} ${info.managerTag}:`}
                   </div>
                   <ul>
                     {info.subordinates.map((subordinate) => {
@@ -83,7 +83,7 @@ export const RedUsersData = ({ data, startDate, endDate }) => {
                             {subordinate.name}:
                           </span>{" "}
                           {subordinate.hours.openAir || 0} hour(s) in OpenAir,{" "}
-                          {subordinate.hours.client || 0} hour(s) in Client report,
+                          {subordinate.hours.client || 0} hour(s) in Client report,{" "}
                           {subordinate.hours.third || 0} hour(s) in projections
                         </li>
                       );
